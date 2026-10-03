@@ -1,0 +1,23 @@
+# Reference source (read-only, not ours)
+reference/
+
+# Xcode / Swift build output
+build/
+.build/
+DerivedData/
+work/visualizations/
+*.xcuserstate
+xcuserdata/
+*.xcscmblueprint
+
+# macOS
+.DS_Store
+
+# Secrets — never commit
+*.env
+.env*
+*.p12
+*.pem
+*.key
+auth.json
+credentials*.json
