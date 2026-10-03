@@ -7,7 +7,7 @@
 
 ## [0.1.0] - 2026-10-03
 
-เผยแพร่ source ครั้งแรกสำหรับ build เอง ไม่มี binary release หรือ tag
+เผยแพร่ source ครั้งแรกที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) สำหรับ build เอง ไม่มี binary release หรือ tag
 
 ### S1–S3 CLI integration (2026-10-03)
 

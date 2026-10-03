@@ -1,10 +1,10 @@
 # สถานะ AIUsageBar
 
-อัปเดต: 2026-10-03 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; source เตรียมไว้ใน working tree ยังไม่เผยแพร่
+อัปเดต: 2026-10-03 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
 
 ## เวอร์ชันและหลักฐาน
 
-- Development `0.1.0` build **6**; ยังไม่มี published release/remote
+- Public source version `0.1.0` build **6**; `origin` = `https://github.com/kraiwin/AIUsageBar.git`, branch `main` ไม่มี tag/GitHub Release/binary release
 - Final Release build ผ่าน; XCTest **113/113**, failed0/skipped0; independent review ปิด findings ครบและตรวจ delta สุดท้ายแล้ว
 - Real Codex weekly/reset + actual Claude Code latest snapshot แสดงพร้อมกันแล้ว; Claude install→exact restore→reinstall ผ่าน; Cmd-Q ผ่าน
 - Default menu-mode60.60s: CPU0.48%, peakRSS96.75MiB, zero owned children หลัง fetch
@@ -19,7 +19,7 @@
 | M2 | Menu Bar ภาษาไทย | ใช้งานจริงแล้ว text-only ชื่อเต็ม, status/freshness/refresh/quit, optional live window |
 | M3 | สอง providers | จริงทั้งสองค่ายบน Mac นี้; Claude เป็น ingest-time snapshot ไม่มี account binding |
 | M4 | ความถูกต้อง/ความทนทาน | personal-use acceptance ผ่าน tests/review/live flows/resource; audibleVoiceOver, actualsleep/wake/offline/timezoneยังไม่ได้ตรวจ |
-| M5 | source-build preparation | README/license/credits/secret-scope checks พร้อมใน working tree; publication ยังไม่ได้ทำ |
+| M5 | source-build preparation | public source เผยแพร่แล้ว พร้อม README ภาษาไทย/license/credits และ pre-publication scope checks |
 
 ## วิธีใช้งานบน Mac นี้
 
@@ -31,9 +31,9 @@ Build จาก source ด้วยคำสั่งใน README หรือ 
 
 1. ใช้งานส่วนตัวและเก็บ feedback ได้ ไม่ต้องกลับไปทำ startup prerequisites เดิมถ้า CLI/config ไม่เปลี่ยน
 2. Optional validation ที่ยังไม่ได้ตรวจ: audible VoiceOver, sleep/wake/offline/OS-clock/timezone จริง และ runtime macOS14/Intel ระบุไว้ตามจริง ไม่ใช่ gate ที่ผ่านแล้ว
-3. ก่อน public publication ตรวจ staged source scope รอบสุดท้ายและให้เจ้าของระบุ GitHub destination/คำสั่งชัดเจน ตอนนี้ไม่ create remote/push/tag/release และไม่ commit งานเก่าแทนผู้ใช้
+3. Public source อยู่ที่ `kraiwin/AIUsageBar` แล้ว; source commit แรก `2f0fe19` อ่านกลับตรงกับ remote `main` ไม่มี tag/binary/GitHub Release การเปลี่ยนต่อไปใช้ local gate/review/secret scope ก่อน commit/push
 4. Claude valid latest ไม่มี quota → no-data/—; malformed ไม่เป็น0; snapshot/sessionล่าสุดไม่รับรองบัญชีปัจจุบัน Codex CLI/configต่างอาจ failclosedตามguard; ไม่มี mcp-list fallback
-5. Source implementation รอบนี้ supersedes baseline beforeimplementation ใน handoff/plans เดิม ยึด DECISIONS ข้อ20/validationนี้
+5. Source implementation และ publication supersede baseline ก่อนหน้าใน handoff/plans เดิม ยึด DECISIONS ข้อ20–21 และ validation ล่าสุด
 
 ## บันทึกความคืบหน้า
 
@@ -58,3 +58,5 @@ Build จาก source ด้วยคำสั่งใน README หรือ 
 เพิ่มบันทึกเมื่อจบชุดงานที่มีผลลัพธ์ ไม่ต้องบันทึกทุกคำสั่งหรือซ้ำรายละเอียด changelog
 
 | 2026-10-03 | ทำ S1–S3 ด้วย sub-agents ขนานจริง: Codex guarded two-child/native discovery, Claude native wrapper/installer/snapshot, real UI/coordinator และเตรียม public source | Final113/0/0, Release build6, independent reviewผ่าน; actualทั้งสองproviders/install-exactrestore-reinstall/CmdQ/CPU0.48%RSS96.75MiBผ่านในMacนี้ ข้อจำกัดในvalidation | ใช้งานส่วนตัว/feedback; publicationเมื่อdestination+คำสั่งชัดเจน |
+
+| 2026-10-03 | Owner ยืนยัน kraiwin/AIUsageBar public และให้เผยแพร่ source0.1.0/build6 | Ship gate113/0/0; redacted unrelated private workflow docs; source snapshot84files; GitHubmain readbackตรง2f0fe19 ไม่มี binary/tag; scaffoldเดิมอยู่local-only branch | ใช้งาน/feedback; optional platform/accessibility checksตามข้อจำกัด |

@@ -14,6 +14,8 @@
 
 ## ผลตรวจ source preparation
 
+Public source เผยแพร่แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) ตรวจ `main` readback ตรง source commit `2f0fe19`; [publication evidence](validation/2026-10-03-publication.md) ไม่มี binary/tag/GitHub Release
+
 อัปเดตหลัง [validation S1–S3](validation/2026-10-03-s1-s3.md): ผ่าน final113tests/Release/real providers/install-restore-reinstall/independentreview/sourcecandidateaudit84files ไม่มี matching credential patterns/build artifacts/symlinks การตรวจนี้ครอบคลุม personal-use scope บน Mac นี้ ไม่ใช่การรับรองทุก OS หรือ audibleVoiceOver ที่ยังไม่ได้ตรวจ ก่อน publication ตรวจ staged scope ซ้ำ
 
 - [x] ผู้ดูแลรอบงานยืนยันใน `STATUS.md` ว่า Release build และ test suite ของ source ปัจจุบันผ่าน พร้อมผล CLI smoke ที่จำเป็น โดยไม่บันทึก quota, account payload หรือ credential
