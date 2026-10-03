@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+- แก้ Claude bridge ให้ติดตั้งได้เมื่อไม่เคยตั้ง statusline หรือยังไม่มี settings.json: เก็บ quota อย่างเดียวแบบเงียบ พร้อม restore/conflict protection และรักษา unrelated edits
+- เพิ่มวิธีอัปเดต wrapper/helper หลัง build และข้อจำกัด shell ใน README; ชี้แยกเอกสารสำหรับผู้พัฒนา
+- ลบ standalone Tools/ClaudeBridge/main.swift ที่ไม่อยู่ใน build; entrypoint ใช้ executable ของแอปตามเดิม
+
 ## [0.1.0] - 2026-10-03
 
 เผยแพร่ source ครั้งแรกที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) สำหรับ build เอง ไม่มี binary release หรือ tag

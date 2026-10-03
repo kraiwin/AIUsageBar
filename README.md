@@ -2,7 +2,7 @@
 
 แอป macOS Menu Bar ภาษาไทย แสดงโควตารายสัปดาห์ที่ **เหลือ** ของ Codex และ snapshot ล่าสุดจาก Claude Code ใช้ official CLI ที่ผู้ใช้ติดตั้งและเข้าสู่ระบบเอง ไม่ใช่ API billing และไม่รองรับบัญชีที่ใช้เว็บอย่างเดียว
 
-Development `0.1.0` (build 6) เชื่อม Codex และ Claude snapshot แล้ว ผลล่าสุด 113/113 tests และ Release build ผ่านบน Mac นี้
+Development `0.1.0` (build 6) เชื่อม Codex และ Claude snapshot แล้ว Local first-install fix ล่าสุด: 120/120 tests และ Release build ผ่านบน Mac นี้ ดู [ผลตรวจ](docs/validation/2026-10-04-claude-first-install.md) ยังไม่เผยแพร่ fix นี้
 
 Public source สำหรับ build เอง: [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) เวอร์ชัน source `0.1.0` ไม่มี binary release/tag; การตรวจจริงและข้อจำกัดล่าสุดอยู่ใน [STATUS](docs/STATUS.md)
 
@@ -47,9 +47,11 @@ UI/Claude snapshot อ่านทุก 5 วินาที; Codex รีเ�
 
 ## เชื่อม Claude Code
 
-ต้องมี user-level `~/.claude/settings.json` ที่ตั้ง `statusLine.type` เป็น `command` และมี `statusLine.command` เดิมอยู่แล้ว เลือก “ติดตั้ง Claude Code bridge…” ในเมนู ตรวจ preview ของคำสั่ง/ปลายทางแล้วติดตั้ง แอปสำรองและเปลี่ยนเฉพาะ command token คง padding และ keys อื่น เปรียบเทียบ bytes ก่อนเขียน; ถ้ามี conflict จะไม่เขียนทับ
+ไม่จำเป็นต้องเคยตั้ง statusline: ถ้าไม่มี `statusLine` หรือยังไม่มี `~/.claude/settings.json` แอปเพิ่มตัวเชื่อมเพื่อเก็บ quota อย่างเดียว โดยไม่แสดงข้อความใน statusline ถ้ามี statusline แบบ command อยู่แล้ว แอปคงคำสั่งเดิมไว้ เลือก “ติดตั้ง Claude Code bridge…” ในเมนู ตรวจ preview ของคำสั่ง/ปลายทางแล้วติดตั้ง แอปสำรองและเปลี่ยนเฉพาะ command token ของ statusline เดิม หรือเพิ่ม `statusLine` เมื่อยังไม่มี คง padding และ keys อื่น เปรียบเทียบ bytes ก่อนเขียน; ถ้ามี conflict จะไม่เขียนทับ
 
 เปิด Claude Code session ใหม่หรือให้ session โหลด settings ใหม่เพื่อเรียก statusline wrapper คำสั่งเดิมรับ stdin bytes เดิมและส่ง stdout/stderr/exit เหมือนเดิม จากนั้น helper บันทึกเฉพาะ quota แบบ atomic ไม่เก็บ raw stdin, transcript, workspace, session ID, email หรือ credential ไม่เพิ่ม jq/python/node เป็น dependency ของ bridge (คำสั่ง statusline เดิมอาจมี dependencies ของตัวเอง)
+
+คำสั่งเดิมรันผ่าน `/bin/sh -c` หากใช้ syntax เฉพาะ zsh ให้ระบุ `/bin/zsh -c` เอง หรือเรียกไฟล์ executable ที่มี shebang เลือก shell ให้ชัดเจน
 
 snapshot ล่าสุดอาจมาจาก session อื่น ไม่มี account binding ป้าย “จาก Claude Code ล่าสุด เวลา X” คือเวลารับ snapshot **ไม่ใช่เวลาที่ server ยืนยันยอด** project/local/managed statusline overrides อาจทำให้ session นั้นไม่ส่งข้อมูล แอปไม่แก้ project settings
 
@@ -70,11 +72,15 @@ BRIDGE_DIRECTORY="$HOME/Library/Application Support/AIUsageBar"
 
 CLI `install` เป็นคำสั่ง apply โดยตรง: ผู้ใช้ควรตรวจ `preview` ก่อน ไฟล์ wrapper/helper อยู่ใน Application Support จึงไม่ย้ายตาม app ถ้า helper หาย คำสั่งเดิมยังทำงาน ถ้า wrapper หาย คำสั่ง settings มี fallback ไปคำสั่งเดิม อย่าลบทั้งโฟลเดอร์เองเมื่อมี conflict
 
+### หลัง build แอปใหม่
+
+wrapper/helper เป็นสำเนา executable ณ วันที่ติดตั้ง จึงไม่อัปเดตตาม `.app` อัตโนมัติ หลัง build รุ่นใหม่ ให้เปิดแอปรุ่นใหม่ กด “คืน statusline เดิม / ตัด Claude” แล้ว “ติดตั้ง Claude Code bridge…” อีกครั้ง ตรวจ preview ก่อนยืนยัน และเปิด Claude Code session ใหม่ ขั้นตอนนี้ล้าง snapshot เดิมจนกว่าจะมีข้อมูลรอบใหม่ หากพบ conflict ให้แก้ตามข้อความก่อน ไม่ลบโฟลเดอร์เอง
+
 ## ข้อความบน Menu Bar และการถอดการติดตั้ง
 
 `Claude — · Codex —` หมายถึงยังไม่มีค่าที่แสดงได้; `0%` คือเหลือ 0 จริง เครื่องหมาย `*` คือ Claude snapshot และ `~` คือข้อมูลเก่าหรือครั้งก่อน รายละเอียดสถานะและเวลา reset อยู่ในเมนู/tooltip ไม่แสดงเลขเก่าที่ reset ผ่านแล้วเป็นค่าปัจจุบัน เวลาใช้ timezone ของเครื่อง
 
-“ตัดการเชื่อม Codex” หยุด request และลบ path ที่เลือก “คืน statusline เดิม / ตัด Claude” คืนเฉพาะ command ของ installation ที่เราเป็นเจ้าของแล้วลบ owned artifacts ถ้า command หรือไฟล์ของเราเปลี่ยน จะให้แก้ conflict ก่อน ไม่เขียนทับข้อมูลใหม่ของผู้ใช้ จากนั้นออกจากแอปและลบ `.app` ได้ ไม่มี updater, analytics หรือ telemetry ของแอป
+“ตัดการเชื่อม Codex” หยุด request และลบ path ที่เลือก “คืน statusline เดิม / ตัด Claude” คืนเฉพาะ command ของ installation ที่เราเป็นเจ้าของ ถ้าเดิมไม่มี statusline จะลบเฉพาะ object ที่ตัวเชื่อมเพิ่ม; ถ้าเดิมไม่มี settings file จะลบไฟล์ที่สร้างเฉพาะเมื่อเนื้อหายังคงเดิม แล้วลบ owned artifacts ถ้า command หรือไฟล์ของเราเปลี่ยน จะให้แก้ conflict ก่อน ไม่เขียนทับข้อมูลใหม่ของผู้ใช้ จากนั้นออกจากแอปและลบ `.app` ได้ ไม่มี updater, analytics หรือ telemetry ของแอป
 
 ## ไฟล์และโปรแกรมที่ใช้
 
@@ -82,7 +88,7 @@ CLI `install` เป็นคำสั่ง apply โดยตรง: ผู้
 |---|---|
 | native Codex CLI ที่ยืนยัน | stdio RPC สอง child ต่อ refresh; official CLI จัดการ auth/Keychain/network/refresh/state/logs ของตัวเอง |
 | Codex-resolved config ผ่าน RPC | bounded in-memory inventory/guard assertions; ไม่อ่าน/parse TOML layering เอง ไม่ cache transport/env/header ไม่แก้ config |
-| `~/.claude/settings.json` | user-level command-only edit มี compare-before-write/backup/restore |
+| `~/.claude/settings.json` | user-level command edit หรือเพิ่ม statusLine เมื่อยังไม่มี มี compare-before-write/backup/restore |
 | `~/Library/Application Support/AIUsageBar/claude-wrapper`, `claude-helper` | native executable ที่สำเนาจาก build ของเรา รองรับ original-command fallback |
 | `claude-latest.json` ใน directory เดียวกัน | private quota-only atomic snapshot หรือ no-data tombstone |
 | `claude-settings-backup.json`, `claude-install.json` | private original settings backup และ ownership metadata ไม่ควรแชร์/commit |
@@ -112,3 +118,7 @@ open build/DerivedData/Build/Products/Release/AIUsageBar.app --args --demo
 ได้รับแรงบันดาลใจจาก CodexBar และพัฒนาขึ้นใหม่ ดู [เครดิต](THIRD_PARTY_NOTICES.md) Source ใช้ [MIT](LICENSE) ไม่ใช่แอปทางการของ OpenAI หรือ Anthropic
 
 เอกสารหลัก: [DECISIONS](docs/DECISIONS.md), [DEVELOPMENT](docs/DEVELOPMENT.md), [execution plan](docs/plans/2026-10-03-s1-s3-execution-plan.md), [MEMORY](MEMORY.md)
+
+## เอกสารสำหรับผู้พัฒนา
+
+README นี้เป็นจุดเริ่มต้นสำหรับผู้ใช้ ส่วน `docs/STATUS.md` และ `docs/validation/` บันทึกผลตรวจและข้อจำกัด `docs/plans/`, `docs/HANDOFF-*`, `MEMORY.md` และ `AGENTS.md` เป็นบันทึกการพัฒนา/รับช่วงงาน ไม่ใช่ขั้นตอนติดตั้งที่ผู้ใช้ต้องทำ

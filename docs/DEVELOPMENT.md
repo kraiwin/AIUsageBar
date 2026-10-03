@@ -65,6 +65,8 @@
 6. หากสร้าง commit ให้หนึ่ง commit มีจุดประสงค์ชัดเจน เช่น `feat:`, `fix:`, `docs:`, `test:` หรือ `build:`; commit เฉพาะไฟล์ของชุดงาน
 
 งาน authentication, ความถูกต้องของ usage หรือการเปลี่ยนข้ามโมดูลที่มีผลสำคัญต้องมี independent review ตาม AGENTS ก่อนปิดงาน
+Independent review โดย native Codex agent เช่น Waluigi เป็นการตรวจด้วยบริบทแยก แต่ยังเป็น Codex ไม่ใช่ Claude review หรือ independent-model validation งานที่ระบุว่าต้องรับ Claude review ให้บันทึกผลจาก Claude แยกตามจริง ห้ามใช้ชื่อ role แทนหลักฐานจากอีกโมเดล
+
 ไม่เพิ่ม dependency, Git hooks หรือ CI ที่รันโค้ดจากภายนอกโดยไม่ได้ตรวจและอธิบายเหตุผล
 เมื่อมี source ให้กำหนดคำสั่ง build/test ที่ทำซ้ำได้ใน README รวมเครื่องมือที่ใช้และ target macOS
 

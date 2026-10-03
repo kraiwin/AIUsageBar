@@ -1,8 +1,16 @@
 # สถานะ AIUsageBar
 
-อัปเดต: 2026-10-03 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
+อัปเดต: 2026-10-04 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
 
-## เวอร์ชันและหลักฐาน
+## Local fix หลัง publication
+
+แก้ Claude first install แล้ว: ไม่ต้องมี statusline/settings.json เดิม; quota-only silent capture พร้อมคืนค่าและรักษา unrelated edits Final XCTest **120/120**, Release build และ synthetic Release CLI install→collect→restore **2/2** ผ่าน Independent-context Codex review ปิด blocker แล้ว ไม่ใช่ Claude review ยังไม่อัปเดตแอป/bridge ที่ใช้งานจริงและยังไม่ commit/push ดู [validation](validation/2026-10-04-claude-first-install.md)
+
+ผู้ใช้สั่งปิดคืนนี้: commit/push เฉพาะเอกสารและ handoff; source/tests และการลบ Tools ยังเป็น local WIP ไม่เผยแพร่ ไม่เปลี่ยนเวอร์ชันและไม่ติดตั้งจริง เริ่มงานต่อเมื่อผู้ใช้สั่ง
+
+README เพิ่มวิธีอัปเดต bridge หลัง build, shell limitation และคำอธิบาย internal docs; ลบ Tools entrypoint ที่ไม่ใช้ คง Codex strict-config จนมีหลักฐาน/validation สำหรับเปลี่ยนขอบเขต guard
+
+## เวอร์ชันและหลักฐานจาก publication เดิม
 
 - Public source version `0.1.0` build **6**; `origin` = `https://github.com/kraiwin/AIUsageBar.git`, branch `main` ไม่มี tag/GitHub Release/binary release
 - Final Release build ผ่าน; XCTest **113/113**, failed0/skipped0; independent review ปิด findings ครบและตรวจ delta สุดท้ายแล้ว
