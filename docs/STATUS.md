@@ -1,14 +1,14 @@
 # สถานะ AIUsageBar
 
-อัปเดต: 2026-10-04 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
+อัปเดต: 2026-10-05 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
 
-## Local fix หลัง publication
+## ปิดชุด fix 2026-10-05
 
-แก้ Claude first install แล้ว: ไม่ต้องมี statusline/settings.json เดิม; quota-only silent capture พร้อมคืนค่าและรักษา unrelated edits Final XCTest **120/120**, Release build และ synthetic Release CLI install→collect→restore **2/2** ผ่าน Independent-context Codex review ปิด blocker แล้ว ไม่ใช่ Claude review ยังไม่อัปเดตแอป/bridge ที่ใช้งานจริงและยังไม่ commit/push ดู [validation](validation/2026-10-04-claude-first-install.md)
+แก้ first-install/restore retry และ Codex error hint แล้ว โดยคง strict-config และ guards เดิม Final XCTest **126/126**, failed0/skipped0; Release build, synthetic Release CLI smoke2/2 และ independent-context Codex review ผ่าน ไม่มี material finding ค้าง ตรวจ UI บน Mac นี้: คืน bridge เดิม → ติดตั้ง build ใหม่ → ถอด → ติดตั้งกลับ; settings คืนตรง bytes เดิมทุกครั้ง และ helper/wrapper ตรง executable ใหม่ เปิดแอปกลับโหมด Menu Bar ปกติแล้ว
 
-ผู้ใช้สั่งปิดคืนนี้: commit/push เฉพาะเอกสารและ handoff; source/tests และการลบ Tools ยังเป็น local WIP ไม่เผยแพร่ ไม่เปลี่ยนเวอร์ชันและไม่ติดตั้งจริง เริ่มงานต่อเมื่อผู้ใช้สั่ง
+หลักฐานและข้อจำกัด: [fix closure validation](validation/2026-10-05-fix-closure.md) แทนงานค้างใน [handoff ก่อนปิดชุด](HANDOFF-2026-10-05-105307-desktop-fix-validation.md) แอป/bridge ใช้ `0.1.0` build6 ตามเดิม ไม่มี binary/tag/notarization; รอบนี้เผยแพร่ source fix ตามคำสั่งผู้ใช้
 
-README เพิ่มวิธีอัปเดต bridge หลัง build, shell limitation และคำอธิบาย internal docs; ลบ Tools entrypoint ที่ไม่ใช้ คง Codex strict-config จนมีหลักฐาน/validation สำหรับเปลี่ยนขอบเขต guard
+Restore มี checkpoint ส่วนตัวและลบ metadata ท้ายสุด ทำให้ retry หลัง settings/backup ถูกลบระหว่าง cleanup ได้ โดยยังตรวจ ownership/digest/สิทธิ์และปฏิเสธ conflict Preview ปฏิเสธ BOM/UTF-16 ที่ byte scanner ไม่รองรับก่อนเขียน
 
 ## เวอร์ชันและหลักฐานจาก publication เดิม
 
@@ -31,7 +31,7 @@ README เพิ่มวิธีอัปเดต bridge หลัง build, 
 
 ## วิธีใช้งานบน Mac นี้
 
-Final validated bundle: `build/ReleaseValidation/Build/Products/Release/AIUsageBar.app` เปิดอยู่ในโหมด Menu Bar ปกติ เลือก native Codex path เดิมแล้ว Claude bridge ติดตั้งที่ `~/Library/Application Support/AIUsageBar/` โดย backup/metadata/private snapshot อยู่นอก Git
+Final validated bundle: `build/OctoberCloseRelease/Build/Products/Release/AIUsageBar.app` เปิดอยู่ในโหมด Menu Bar ปกติ เลือก native Codex path เดิมแล้ว Claude bridge ติดตั้งที่ `~/Library/Application Support/AIUsageBar/` โดย backup/metadata/private snapshot อยู่นอก Git
 
 Build จาก source ด้วยคำสั่งใน README หรือ Xcode ไม่ต้อง Apple Developer Program; App Sandbox ปิด/Hardened Runtime เปิด/ad-hoc ไม่มี XPC/notarization/updater/telemetry
 

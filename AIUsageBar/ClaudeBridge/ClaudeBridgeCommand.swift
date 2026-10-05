@@ -5,13 +5,13 @@ enum ClaudeBridgeCommand {
     /// Call before NSApplication starts. nil means ordinary app startup. The
     /// copied app executable is also a standalone helper, without opening UI.
     static func run(arguments: [String]) -> Int32? {
-        guard let mode = arguments.first, ["wrap", "ingest", "preview", "install", "disconnect"].contains(mode) else { return nil }
+        guard let mode = arguments.first, ["wrap", "collect", "ingest", "preview", "install", "disconnect"].contains(mode) else { return nil }
         do {
             switch mode {
             case "wrap":
                 guard arguments.count == 4 else { throw ClaudeBridgeError.invalidSettings }
                 return ClaudeOriginalCommand.run(command: arguments[1], helperPath: arguments[2], directory: URL(fileURLWithPath: arguments[3]))
-            case "ingest":
+            case "ingest", "collect":
                 guard arguments.count == 2 else { throw ClaudeBridgeError.invalidSettings }
                 var data = Data()
                 while let chunk = try FileHandle.standardInput.read(upToCount: 8_192), !chunk.isEmpty {
@@ -35,10 +35,10 @@ enum ClaudeBridgeCommand {
             }
             return 0
         } catch {
-            if mode != "ingest" && mode != "wrap" {
+            if mode != "ingest" && mode != "collect" && mode != "wrap" {
                 FileHandle.standardError.write(Data("Claude bridge operation failed; settings were not printed.\n".utf8))
             }
-            return 1
+            return mode == "collect" ? 0 : 1
         }
     }
 }

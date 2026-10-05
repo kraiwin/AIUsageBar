@@ -59,7 +59,7 @@ enum ClaudePrivateFiles {
 
     /// Caller holds the directory lock. Replaces only a safe existing artifact.
     static func atomicWrite(_ data: Data, name: String, directoryFD: Int32,
-                            mode: mode_t = 0o600) throws {
+                            mode: mode_t = 0o600, replaceExisting: Bool = true) throws {
         guard !name.contains("/"), name != ".", name != ".." else { throw ClaudeBridgeError.unsafeFile }
         var old = stat()
         if fstatat(directoryFD, name, &old, AT_SYMLINK_NOFOLLOW) == 0 {
@@ -78,8 +78,14 @@ enum ClaudePrivateFiles {
                 offset += count
             }
         }
-        guard fsync(fd) == 0, renameat(directoryFD, temporary, directoryFD, name) == 0,
-              fsync(directoryFD) == 0 else { throw ClaudeBridgeError.ioFailure }
+        guard fsync(fd) == 0 else { throw ClaudeBridgeError.ioFailure }
+        let renamed = replaceExisting
+            ? renameat(directoryFD, temporary, directoryFD, name)
+            : renameatx_np(directoryFD, temporary, directoryFD, name, UInt32(RENAME_EXCL))
+        guard renamed == 0 else {
+            throw !replaceExisting && errno == EEXIST ? ClaudeBridgeError.conflict : ClaudeBridgeError.ioFailure
+        }
+        guard fsync(directoryFD) == 0 else { throw ClaudeBridgeError.ioFailure }
     }
 
     static func withLock<T>(directoryFD: Int32, _ body: () throws -> T) throws -> T {

@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+- แก้ restore retry หลัง interruption: เก็บ checkpoint ส่วนตัวก่อน cleanup ลบ metadata ท้ายสุด ตรวจ settings/backup digest และ ownership ของไฟล์ที่เหลือ
+- ปฏิเสธ settings encoding ที่ byte scanner ไม่รองรับ (เช่น BOM/UTF-16) ก่อนเขียน ป้องกัน JSON เสียระหว่าง first install
+
+- เพิ่มข้อความ Codex load failure สำหรับ CLI ที่หยุดหรือ config ไม่รองรับ: ระบุว่า unknown config ของ CLI อาจเป็นสาเหตุ ไม่แสดง raw diagnostics และคง strict-config
+
 - แก้ Claude bridge ให้ติดตั้งได้เมื่อไม่เคยตั้ง statusline หรือยังไม่มี settings.json: เก็บ quota อย่างเดียวแบบเงียบ พร้อม restore/conflict protection และรักษา unrelated edits
 - เพิ่มวิธีอัปเดต wrapper/helper หลัง build และข้อจำกัด shell ใน README; ชี้แยกเอกสารสำหรับผู้พัฒนา
 - ลบ standalone Tools/ClaudeBridge/main.swift ที่ไม่อยู่ใน build; entrypoint ใช้ executable ของแอปตามเดิม

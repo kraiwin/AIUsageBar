@@ -1,4 +1,5 @@
 import Darwin
+import CryptoKit
 import Foundation
 import XCTest
 @testable import AIUsageBar
@@ -24,6 +25,236 @@ final class ClaudeBridgeTests: XCTestCase {
         try write(original ?? Data("{\n  \"statusLine\" : { \"type\":\"command\", \"command\" : \"/bin/cat\", \"padding\": 2 },\n \"other\": {\"keep\":true}\n}\n".utf8), to: settings)
         return try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
                                                   wrapperBinary: Data("synthetic-wrapper".utf8), helperBinary: Data("synthetic-helper".utf8))
+    }
+
+    func testCreatingSettingsNeverReplacesAFileThatAppears() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+        let fd = try ClaudePrivateFiles.directory(root)
+        defer { close(fd) }
+        try write(Data("user-created".utf8), to: settings)
+        XCTAssertThrowsError(try ClaudePrivateFiles.atomicWrite(Data("bridge".utf8), name: "settings.json",
+            directoryFD: fd, replaceExisting: false)) { XCTAssertEqual($0 as? ClaudeBridgeError, .conflict) }
+        XCTAssertEqual(try ClaudePrivateFiles.read(settings), Data("user-created".utf8))
+    }
+
+    func testLegacyOwnershipMetadataRestoresExistingCommand() throws {
+        let root = try temporary(), item = try preview(root)
+        try ClaudeBridgeInstaller.apply(item)
+        let metadata = item.directory.appendingPathComponent("claude-install.json")
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: ClaudePrivateFiles.read(metadata)) as? [String: Any])
+        object.removeValue(forKey: "settingsExisted")
+        try write(try JSONSerialization.data(withJSONObject: object), to: metadata)
+        try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL)
+        XCTAssertEqual(try ClaudePrivateFiles.read(item.settingsURL), item.originalSettings)
+    }
+
+    func testNewSettingsFileKeepsLaterUnrelatedEdits() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+        let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+        try ClaudeBridgeInstaller.apply(item)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: item.installedSettings) as? [String: Any])
+        object["later"] = true
+        try write(try JSONSerialization.data(withJSONObject: object), to: settings)
+        try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)
+        let result = try XCTUnwrap(JSONSerialization.jsonObject(with: ClaudePrivateFiles.read(settings)) as? [String: Any])
+        XCTAssertEqual(result["later"] as? Bool, true)
+        XCTAssertNil(result["statusLine"])
+    }
+
+    func testQuotaOnlyInstallRestoresExactBytesWithoutPriorStatusLine() throws {
+        for original in ["{}", "{\n  \"other\":true\n}\n", "{ \"one\":1, \"two\":{} }"] {
+            let root = try temporary(), bytes = Data(original.utf8)
+            let item = try preview(root, original: bytes)
+            XCTAssertEqual(item.originalCommand, "")
+            XCTAssertTrue(item.installedCommand.contains(" collect "))
+            try ClaudeBridgeInstaller.apply(item)
+            XCTAssertTrue(try ClaudeSettingsCommand(data: ClaudePrivateFiles.read(item.settingsURL)).hasStatusLine)
+            try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL)
+            XCTAssertEqual(try ClaudePrivateFiles.read(item.settingsURL), bytes)
+        }
+    }
+
+    func testMissingSettingsInstallRestoreAndRevisionConflict() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("new/settings.json")
+        let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+        XCTAssertFalse(item.settingsExisted)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: settings.path))
+        try ClaudeBridgeInstaller.apply(item)
+        try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: settings.path))
+        let next = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: item.directory,
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+        try write(Data("{}".utf8), to: settings)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.apply(next))
+        XCTAssertEqual(try ClaudePrivateFiles.read(settings), Data("{}".utf8))
+    }
+
+    private func checkpoint(_ item: ClaudeBridgePreview, restored: Data?) throws {
+        if let restored { try write(restored, to: item.settingsURL) }
+        else { try FileManager.default.removeItem(at: item.settingsURL) }
+        let metadata = item.directory.appendingPathComponent("claude-install.json")
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: ClaudePrivateFiles.read(metadata)) as? [String: Any])
+        func digest(_ bytes: Data) -> String {
+            SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
+        }
+        var state = ["backupDigest": digest(item.originalSettings)]
+        if let restored { state["settingsDigest"] = digest(restored) }
+        object["restoredSettings"] = state
+        try write(try JSONSerialization.data(withJSONObject: object), to: metadata)
+    }
+
+    func testFirstInstallRestoreRetriesAfterSettingsRemovedBeforeCheckpoint() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+        let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+        try ClaudeBridgeInstaller.apply(item)
+        try FileManager.default.removeItem(at: settings)
+        try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: settings.path))
+        for name in ClaudeBridgeInstaller.restoreCleanupNames {
+            XCTAssertFalse(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent(name).path))
+        }
+        XCTAssertNoThrow(try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: item.directory,
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8)))
+    }
+
+    func testRestoreRetryRecoversEveryCleanupBoundaryForExistingAndNewSettings() throws {
+        XCTAssertEqual(ClaudeBridgeInstaller.restoreCleanupNames.suffix(2), ["claude-settings-backup.json", "claude-install.json"])
+        for original in [Data?(Data(#"{"statusLine":{"type":"command","command":"/bin/cat"},"other":true}"#.utf8)),
+                         Data?(Data(#"{"other":true}"#.utf8)), nil] {
+            // Prefixes stop before the metadata deletion, which is the final
+            // commit. In particular, the final retry has no backup remaining.
+            for removedCount in 0..<ClaudeBridgeInstaller.restoreCleanupNames.count {
+                let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+                if let original { try write(original, to: settings) }
+                let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+                    wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+                try ClaudeBridgeInstaller.apply(item)
+                try write(Data("synthetic-snapshot".utf8), to: item.directory.appendingPathComponent("claude-latest.json"))
+                let userFile = item.directory.appendingPathComponent("user-file")
+                try write(Data("user-owned".utf8), to: userFile)
+                try checkpoint(item, restored: original)
+                for name in ClaudeBridgeInstaller.restoreCleanupNames.prefix(removedCount) {
+                    try FileManager.default.removeItem(at: item.directory.appendingPathComponent(name))
+                }
+                try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)
+                if let original { XCTAssertEqual(try ClaudePrivateFiles.read(settings), original) }
+                else { XCTAssertFalse(FileManager.default.fileExists(atPath: settings.path)) }
+                for name in ClaudeBridgeInstaller.restoreCleanupNames {
+                    XCTAssertFalse(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent(name).path))
+                }
+                XCTAssertEqual(try ClaudePrivateFiles.read(userFile), Data("user-owned".utf8))
+                XCTAssertNoThrow(try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: item.directory,
+                    wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8)))
+            }
+        }
+    }
+
+    func testRestoreRetryRejectsSettingsRevisionAndMissingPreviouslyExistingSettings() throws {
+        let root = try temporary(), item = try preview(root)
+        try ClaudeBridgeInstaller.apply(item)
+        try FileManager.default.removeItem(at: item.settingsURL)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL)) {
+            XCTAssertEqual($0 as? ClaudeBridgeError, .conflict)
+        }
+        try write(item.installedSettings, to: item.settingsURL)
+        try checkpoint(item, restored: item.originalSettings)
+        let revision = Data(#"{"user-edit":true}"#.utf8)
+        try write(revision, to: item.settingsURL)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL)) {
+            XCTAssertEqual($0 as? ClaudeBridgeError, .conflict)
+        }
+        XCTAssertEqual(try ClaudePrivateFiles.read(item.settingsURL), revision)
+        XCTAssertTrue(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent("claude-install.json").path))
+    }
+
+    func testRestoreRetryRejectsUnsafeAndModifiedRemainingArtifactsWithoutCleanup() throws {
+        for unsafe in ["symlink", "hardlink", "public", "modified"] {
+            let root = try temporary(), item = try preview(root)
+            try ClaudeBridgeInstaller.apply(item)
+            try checkpoint(item, restored: item.originalSettings)
+            let helper = item.directory.appendingPathComponent("claude-helper")
+            let bytes = try ClaudePrivateFiles.read(helper)
+            if unsafe == "symlink" || unsafe == "hardlink" {
+                let target = root.appendingPathComponent("user-file")
+                try write(bytes, to: target)
+                try FileManager.default.removeItem(at: helper)
+                if unsafe == "symlink" { try FileManager.default.createSymbolicLink(at: helper, withDestinationURL: target) }
+                else { XCTAssertEqual(link(target.path, helper.path), 0) }
+            } else if unsafe == "public" { XCTAssertEqual(chmod(helper.path, 0o744), 0) }
+            else { try write(Data("user-replacement".utf8), to: helper, mode: 0o700) }
+            XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL))
+            XCTAssertEqual(try ClaudePrivateFiles.read(item.settingsURL), item.originalSettings)
+            XCTAssertTrue(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent("claude-wrapper").path))
+            XCTAssertTrue(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent("claude-install.json").path))
+        }
+    }
+
+    func testRestoreRetryRejectsModifiedBackupAndRecreatedSettings() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+        let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+            wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))
+        try ClaudeBridgeInstaller.apply(item)
+        try checkpoint(item, restored: nil)
+        let backup = item.directory.appendingPathComponent("claude-settings-backup.json")
+        try write(Data(#"{"user-edit":true}"#.utf8), to: backup)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)) {
+            XCTAssertEqual($0 as? ClaudeBridgeError, .conflict)
+        }
+        try write(item.originalSettings, to: backup)
+        try write(Data("{}".utf8), to: settings)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: settings)) {
+            XCTAssertEqual($0 as? ClaudeBridgeError, .conflict)
+        }
+        XCTAssertEqual(try ClaudePrivateFiles.read(settings), Data("{}".utf8))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: backup.path))
+    }
+
+    func testQuotaOnlyRestorePreservesLaterKeysAndRejectsStatusLineEdits() throws {
+        let root = try temporary(), item = try preview(root, original: Data("{}".utf8))
+        try ClaudeBridgeInstaller.apply(item)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: item.installedSettings) as? [String: Any])
+        object["later"] = true
+        var status = try XCTUnwrap(object["statusLine"] as? [String: Any])
+        status["padding"] = 4
+        object["statusLine"] = status
+        try write(try JSONSerialization.data(withJSONObject: object), to: item.settingsURL)
+        XCTAssertThrowsError(try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL))
+        status.removeValue(forKey: "padding")
+        object["statusLine"] = status
+        try write(try JSONSerialization.data(withJSONObject: object), to: item.settingsURL)
+        try ClaudeBridgeInstaller.restore(directory: item.directory, settingsURL: item.settingsURL)
+        let restored = try XCTUnwrap(JSONSerialization.jsonObject(with: ClaudePrivateFiles.read(item.settingsURL)) as? [String: Any])
+        XCTAssertEqual(restored["later"] as? Bool, true)
+        XCTAssertNil(restored["statusLine"])
+    }
+
+    func testCollectStoresOnlyQuotaAndIsSilentOnInvalidInput() throws {
+        let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+        try write(Data("{}".utf8), to: settings)
+        let executable = try Data(contentsOf: binary())
+        let item = try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: root.appendingPathComponent("bridge"),
+            wrapperBinary: executable, helperBinary: executable)
+        try ClaudeBridgeInstaller.apply(item)
+        for payload in [quota, Data("invalid".utf8)] {
+            let child = Process(), input = Pipe(), output = Pipe(), error = Pipe()
+            child.executableURL = URL(fileURLWithPath: "/bin/sh")
+            child.environment = childEnvironment()
+            child.arguments = ["-c", item.installedCommand]
+            child.standardInput = input; child.standardOutput = output; child.standardError = error
+            try child.run()
+            input.fileHandleForWriting.write(payload)
+            try input.fileHandleForWriting.close()
+            child.waitUntilExit()
+            XCTAssertEqual(child.terminationStatus, 0)
+            XCTAssertTrue(output.fileHandleForReading.readDataToEndOfFile().isEmpty)
+            XCTAssertTrue(error.fileHandleForReading.readDataToEndOfFile().isEmpty)
+        }
+        let snapshot = try ClaudePrivateFiles.read(item.directory.appendingPathComponent("claude-latest.json"))
+        XCTAssertFalse(String(decoding: snapshot, as: UTF8.self).contains("synthetic-not-retained"))
+        XCTAssertEqual(try ClaudeSnapshotProvider(snapshotURL: item.directory.appendingPathComponent("claude-latest.json")).read()?.weekly.usedPercent, 0)
     }
 
     func testQuotaOnlyAndRepeatedReadsDoNotAdvanceTimestamp() throws {
@@ -173,6 +404,24 @@ final class ClaudeBridgeTests: XCTestCase {
         XCTAssertEqual(try ClaudePrivateFiles.read(item.settingsURL), item.originalSettings)
         for name in ClaudeBridgeInstaller.artifactNames {
             XCTAssertFalse(FileManager.default.fileExists(atPath: item.directory.appendingPathComponent(name).path))
+        }
+    }
+
+    func testBOMSettingsPreviewFailsClosedWithoutWritingSettingsOrBridge() throws {
+        for object in [#"{"other":true}"#, #"{"statusLine":{"type":"command","command":"/bin/cat"},"other":true}"#] {
+            let root = try temporary(), settings = root.appendingPathComponent("settings.json")
+            let directory = root.appendingPathComponent("bridge")
+            let bytes = Data([0xEF, 0xBB, 0xBF]) + Data(object.utf8)
+            // Foundation accepts this object, but our byte-offset parser does
+            // not support the BOM. It must reject rather than patch a scalar.
+            XCTAssertTrue(try JSONSerialization.jsonObject(with: bytes) is [String: Any])
+            try write(bytes, to: settings)
+            XCTAssertThrowsError(try ClaudeBridgeInstaller.preview(settingsURL: settings, directory: directory,
+                wrapperBinary: Data("wrapper".utf8), helperBinary: Data("helper".utf8))) {
+                XCTAssertEqual($0 as? ClaudeBridgeError, .invalidSettings)
+            }
+            XCTAssertEqual(try ClaudePrivateFiles.read(settings), bytes)
+            XCTAssertFalse(FileManager.default.fileExists(atPath: directory.path))
         }
     }
 

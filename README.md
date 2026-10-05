@@ -2,7 +2,7 @@
 
 แอป macOS Menu Bar ภาษาไทย แสดงโควตารายสัปดาห์ที่ **เหลือ** ของ Codex และ snapshot ล่าสุดจาก Claude Code ใช้ official CLI ที่ผู้ใช้ติดตั้งและเข้าสู่ระบบเอง ไม่ใช่ API billing และไม่รองรับบัญชีที่ใช้เว็บอย่างเดียว
 
-Development `0.1.0` (build 6) เชื่อม Codex และ Claude snapshot แล้ว Local first-install fix ล่าสุด: 120/120 tests และ Release build ผ่านบน Mac นี้ ดู [ผลตรวจ](docs/validation/2026-10-04-claude-first-install.md) ยังไม่เผยแพร่ fix นี้
+Development `0.1.0` (build 6) เชื่อม Codex และ Claude snapshot แล้ว First-install/restore retry fix: 126/126 tests, Release build และ UI ติดตั้ง–ถอด–ติดตั้งกลับผ่านบน Mac นี้ ดู [ผลตรวจ](docs/validation/2026-10-05-fix-closure.md)
 
 Public source สำหรับ build เอง: [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) เวอร์ชัน source `0.1.0` ไม่มี binary release/tag; การตรวจจริงและข้อจำกัดล่าสุดอยู่ใน [STATUS](docs/STATUS.md)
 
@@ -80,7 +80,7 @@ wrapper/helper เป็นสำเนา executable ณ วันที่ต�
 
 `Claude — · Codex —` หมายถึงยังไม่มีค่าที่แสดงได้; `0%` คือเหลือ 0 จริง เครื่องหมาย `*` คือ Claude snapshot และ `~` คือข้อมูลเก่าหรือครั้งก่อน รายละเอียดสถานะและเวลา reset อยู่ในเมนู/tooltip ไม่แสดงเลขเก่าที่ reset ผ่านแล้วเป็นค่าปัจจุบัน เวลาใช้ timezone ของเครื่อง
 
-“ตัดการเชื่อม Codex” หยุด request และลบ path ที่เลือก “คืน statusline เดิม / ตัด Claude” คืนเฉพาะ command ของ installation ที่เราเป็นเจ้าของ ถ้าเดิมไม่มี statusline จะลบเฉพาะ object ที่ตัวเชื่อมเพิ่ม; ถ้าเดิมไม่มี settings file จะลบไฟล์ที่สร้างเฉพาะเมื่อเนื้อหายังคงเดิม แล้วลบ owned artifacts ถ้า command หรือไฟล์ของเราเปลี่ยน จะให้แก้ conflict ก่อน ไม่เขียนทับข้อมูลใหม่ของผู้ใช้ จากนั้นออกจากแอปและลบ `.app` ได้ ไม่มี updater, analytics หรือ telemetry ของแอป
+“ตัดการเชื่อม Codex” หยุด request และลบ path ที่เลือก “คืน statusline เดิม / ตัด Claude” คืนเฉพาะ command ของ installation ที่เราเป็นเจ้าของ ถ้าเดิมไม่มี statusline จะลบเฉพาะ object ที่ตัวเชื่อมเพิ่ม; ถ้าเดิมไม่มี settings file จะลบไฟล์ที่สร้างเฉพาะเมื่อเนื้อหายังคงเดิม แล้วลบ owned artifacts หากถอดถูกขัดจังหวะ ให้ลองคืน statusline ซ้ำ แอปตรวจหลักฐานการคืนค่าและไฟล์ที่เหลือก่อน cleanup; ถ้า settings เปลี่ยนหลังคืนค่าหรือ command/ไฟล์ของเราเปลี่ยน จะให้แก้ conflict ก่อน ไม่เขียนทับข้อมูลใหม่ของผู้ใช้ จากนั้นออกจากแอปและลบ `.app` ได้ ไม่มี updater, analytics หรือ telemetry ของแอป
 
 ## ไฟล์และโปรแกรมที่ใช้
 

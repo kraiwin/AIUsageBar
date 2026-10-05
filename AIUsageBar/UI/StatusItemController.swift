@@ -223,8 +223,8 @@ final class StatusItemController: NSObject {
                 directory: bridgeDirectory, wrapperBinary: binary, helperBinary: binary)
             let alert = NSAlert()
             alert.messageText = "ติดตั้ง Claude Code bridge"
-            alert.informativeText = "เปลี่ยนเฉพาะ statusLine.command ใน \(preview.settingsURL.path)\n"
-                + "คำสั่งเดิม: \(preview.originalCommand)\nคำสั่งใหม่: \(preview.installedCommand)\n"
+            alert.informativeText = "ตั้งตัวเชื่อมใน \(preview.settingsURL.path)\n"
+                + "คำสั่งเดิม: \(preview.originalCommand.isEmpty ? "ยังไม่มี — เก็บ quota อย่างเดียว" : preview.originalCommand)\nคำสั่งใหม่: \(preview.installedCommand)\n"
                 + "เก็บ native wrapper/helper, backup และ quota-only snapshot ใน \(preview.directory.path)"
             alert.addButton(withTitle: "ติดตั้งพร้อม backup")
             alert.addButton(withTitle: "ยกเลิก")
@@ -233,7 +233,7 @@ final class StatusItemController: NSObject {
                 coordinator.setMessage("ติดตั้งแล้ว เปิด Claude Code session ใหม่เพื่อส่ง snapshot; project override อาจไม่ส่งข้อมูล")
                 coordinator.refresh()
             }
-        } catch { coordinator.setMessage("ติดตั้งไม่ได้: ต้องมี user-level statusline แบบ command หรือพบไฟล์/การแก้ไขที่ขัดกัน") }
+        } catch { coordinator.setMessage("ติดตั้งไม่ได้: settings ไม่รองรับ หรือพบไฟล์/การแก้ไขที่ขัดกัน") }
     }
 
     private func disconnectClaude() {

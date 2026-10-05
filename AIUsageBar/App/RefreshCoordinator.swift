@@ -112,7 +112,12 @@ final class RefreshCoordinator: ObservableObject {
             } catch {
                 guard let self, !Task.isCancelled, self.generation == requestGeneration else { return }
                 self.store.fail(provider: .codex)
-                self.message = "Codex โหลดไม่สำเร็จ ตรวจ CLI/login และการตั้งค่าที่รองรับ"
+                switch error as? CodexProviderError {
+                case .childExited, .unsupportedConfiguration:
+                    self.message = "Codex โหลดไม่สำเร็จ อาจเป็นเพราะไฟล์ตั้งค่ามีค่าที่ CLI รุ่นนี้ไม่รู้จัก หรือการตั้งค่าไม่ตรงกับที่แอปรองรับ ตรวจ CLI และไฟล์ตั้งค่า"
+                default:
+                    self.message = "Codex โหลดไม่สำเร็จ ตรวจ CLI/login และการตั้งค่าที่รองรับ"
+                }
             }
             guard let self, self.generation == requestGeneration else { return }
             self.isRefreshing = false
