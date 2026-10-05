@@ -1,5 +1,7 @@
 # บริบทล่าสุด — หลัง S1–S3 execution 2026-10-03
 
+- **รับช่วง Windows บน PC:** [Windows start handoff](docs/HANDOFF-2026-10-05-111324-windows-start.md) — Mac fix ปิดที่65b85cd; ผู้ใช้ให้ส่งเอกสารขึ้น repoเดิมเพื่อไปเริ่มบนPC แยก windows/ เริ่มตรวจ native/WSL+เขียนแผน stack/guardsก่อนimplementation ยังไม่มี Windows build/test
+
 - **ปิดชุด fix ล่าสุด 2026-10-05:** [fix closure validation](docs/validation/2026-10-05-fix-closure.md) — restore retry/checkpoint และ BOM fail-closed แก้แล้ว, XCTest126/0/0, Release/synthetic2/2/reviewผ่าน; UI Macจริง old restore→new install→disconnect→reinstall ผ่าน exact bytes/binary match เปิด build/OctoberCloseRelease กลับ Menu Bar ปกติ; Claude รอ snapshot จาก session ใหม่ คง strict-config รอบนี้ผู้ใช้สั่ง commit/push source ไป kraiwin/AIUsageBar งานค้างใน handoffด้านล่างถูกปิดแล้ว
 
 - **ประวัติรับช่วง 2026-10-05:** [Desktop fix validation brief](docs/HANDOFF-2026-10-05-105307-desktop-fix-validation.md) — error hint/tests120/Release/synthetic2ผ่าน; native UI connection unavailable; มี restore-retry review concern ต้องปิดก่อน real install/push. ผู้ใช้ให้ส่งต่อ Codex Desktop; แทนงานถัดไปใน handoff เก่า

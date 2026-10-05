@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+- เพิ่ม handoff Windows สำหรับเริ่มบน PC ใน repoเดิม แยก windows/ พร้อมรายการตรวจ native/WSL และแผนก่อนimplementation; ยังไม่รองรับ Windows ในแอปปัจจุบัน
+
 - แก้ restore retry หลัง interruption: เก็บ checkpoint ส่วนตัวก่อน cleanup ลบ metadata ท้ายสุด ตรวจ settings/backup digest และ ownership ของไฟล์ที่เหลือ
 - ปฏิเสธ settings encoding ที่ byte scanner ไม่รองรับ (เช่น BOM/UTF-16) ก่อนเขียน ป้องกัน JSON เสียระหว่าง first install
 

@@ -2,6 +2,10 @@
 
 อัปเดต: 2026-10-05 · **พร้อมใช้ส่วนตัวผ่าน Codex CLI/Claude Code บน Mac นี้** ตาม S1–S3; เผยแพร่ public source แล้วที่ [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar)
 
+## งานต่อบน PC — Windows edition
+
+Mac personal MVP/fix ปิดแล้ว ผู้ใช้ให้ส่งเอกสารรับช่วงไป repoเดิมแบบno-ci เพื่อ clone/pullบนPC เริ่มตรวจ native Windows/WSL และเขียนแผน system-tray MVP แยก windows/ คงMacเดิม ไม่มี Windows source/build/testsในรอบนี้ Stackและsupport contextยังต้องสรุปบนPC ดู [Windows handoff](HANDOFF-2026-10-05-111324-windows-start.md) และ DECISIONSข้อ22
+
 ## ปิดชุด fix 2026-10-05
 
 แก้ first-install/restore retry และ Codex error hint แล้ว โดยคง strict-config และ guards เดิม Final XCTest **126/126**, failed0/skipped0; Release build, synthetic Release CLI smoke2/2 และ independent-context Codex review ผ่าน ไม่มี material finding ค้าง ตรวจ UI บน Mac นี้: คืน bridge เดิม → ติดตั้ง build ใหม่ → ถอด → ติดตั้งกลับ; settings คืนตรง bytes เดิมทุกครั้ง และ helper/wrapper ตรง executable ใหม่ เปิดแอปกลับโหมด Menu Bar ปกติแล้ว

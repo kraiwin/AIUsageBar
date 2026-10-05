@@ -231,3 +231,11 @@ AIUsageBar/
 - Gate รอบ ship รัน XCTest ใหม่113/0/0 โดยใช้ offline synthetic tests; ไม่เรียก usage/account integration ซ้ำระหว่าง gate
 - ก่อนเผยแพร่ตัดรายละเอียด config-backup/workflowส่วนตัวที่ไม่เกี่ยวกับแอปออกจาก public docs; ต้นฉบับ localเก็บใน gitignored `build/PublicationPrivateDocs/`
 - Public history เริ่มจาก source snapshot ที่ตรวจแล้ว; เก็บ scaffold history เดิมใน local-only branch เพื่อไม่เผยรายละเอียดโปรเจกต์อื่นใน commitเก่า ไม่มี reset/amend/force-push
+
+
+## 22. ส่งต่องาน Windows บน PC ใน repo เดิม (2026-10-05)
+
+- ผู้ใช้ขอ handoff สำหรับ PC และสั่ง /ship-no-ci เพื่อให้ clone/pull ไปทำต่อ อนุมัติเฉพาะเอกสารรับช่วงและ commit/push ไป origin/main ของ kraiwin/AIUsageBar ในรอบนี้
+- ทิศทางคือ Windows edition ใน repo เดิม แยก windows/ โดยคง Mac source/Xcode layout ไว้ เริ่มตรวจ native Windows/WSL และเขียนแผนบน PC ก่อนimplementation
+- Windows stack/minimum OS/CLI context/installer/signing/dependenciesยังไม่สรุป; Swift/Apple baselineยังใช้กับMac ไม่อนุมานว่าใช้กับWindowsได้ตรง ๆ
+- ส่งต่อ docs-only ไม่ bump0.1.0/build6 ไม่สร้างtag/binary/GitHub Release หรือแก้Mac app/bridgeที่ใช้งานจริง [skip ci]เป็นconventionไม่รับรองทุกworkflowหยุด
