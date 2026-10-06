@@ -18,7 +18,7 @@
 2. MEMORY.md และ handoff นี้ ซึ่งแทนงานถัดไปใน [handoff 11:37](HANDOFF-2026-10-05-113717-windows-plan-ready.md)
 3. [Windows MVP plan](plans/2026-10-05-windows-mvp-plan.md), [actual Claude review + lead triage](plans/2026-10-05-windows-mvp-claude-review.md)
 4. [PC evidence](validation/2026-10-05-windows-environment.md)
-5. Global `C:/Users/Kraiwin_S/.codex/agents/claude-reviewer.toml`, launcher/brief และ global validation ที่ระบุด้านล่าง
+5. Global `%USERPROFILE%/.codex/agents/claude-reviewer.toml`, launcher/brief และ global validation ที่ระบุด้านล่าง
 
 ตรวจ Git/state จริงก่อนใช้ snapshot ไม่ discard งานเอกสารที่ยังไม่ commit
 
@@ -50,11 +50,11 @@ Microsoft docsถูกเปิดตรวจ Job basic limits/accounting, Cre
 
 สร้างนอก repo:
 
-- `C:/Users/Kraiwin_S/bin/claude-run.py`
-- `C:/Users/Kraiwin_S/bin/claude-review-brief.md`
-- `C:/Users/Kraiwin_S/.codex/agents/claude-reviewer.toml`
+- `%USERPROFILE%/bin/claude-run.py`
+- `%USERPROFILE%/bin/claude-review-brief.md`
+- `%USERPROFILE%/.codex/agents/claude-reviewer.toml`
 
-แก้ `/team` ที่ `C:/Users/Kraiwin_S/.agents/skills/source-command-team/SKILL.md` และแก้เฉพาะข้อความที่ผิดใน `C:/Users/Kraiwin_S/.codex/agents/codex-reviewer.toml` สำรองก่อนแก้เป็น `.bak-20261005` ทั้งสองไฟล์ ไม่แก้config.tomlหรืออ่าน/แก้ `~/.claude` โดยตรง; CLIยังเป็นเจ้าของauth/stateของตัวเอง
+แก้ `/team` ที่ `%USERPROFILE%/.agents/skills/source-command-team/SKILL.md` และแก้เฉพาะข้อความที่ผิดใน `%USERPROFILE%/.codex/agents/codex-reviewer.toml` สำรองก่อนแก้เป็น `.bak-20261005` ทั้งสองไฟล์ ไม่แก้config.tomlหรืออ่าน/แก้ `~/.claude` โดยตรง; CLIยังเป็นเจ้าของauth/stateของตัวเอง
 
 `/team` ตอนนี้แยก nativeGPTroles, Waluigi=GPTรีวิวGPTในบริบทแยก และ ClaudeCLIจริง cross-vendor review ไม่มีmodel/effortปลอมในnative roster
 
@@ -63,7 +63,7 @@ Launcher pin **opus/high**, อนุญาต xhigh ตามscopeเสี่�
 ใช้ workflowเดิมทุกrepo ไม่ประกอบคำสั่งสด:
 
 ```powershell
-python C:/Users/Kraiwin_S/bin/claude-run.py --prompt-file <absolute-UTF8-input> --slug windows-plan-delta
+python %USERPROFILE%/bin/claude-run.py --prompt-file <absolute-UTF8-input> --slug windows-plan-delta
 ```
 
 Promptต้องมีcontextและsourceที่จำเป็นพร้อมpath/เลขบรรทัด เพราะ toolsปิด ไม่ส่งcredential/account/rawconfig unrelated content Launcherใส่standardbriefและnumberedinputให้เอง อ่านexit/resultตามpathก่อนสรุป findingsทุกข้อต้องtraceถึงClaudeจริง; failureรายงานแล้วหยุด ไม่ลดรุ่น/ไม่ให้GPTแต่งแทน Leadตรวจfactsก่อนรับ เพราะClaudeอาจผิด
@@ -111,7 +111,7 @@ docs/HANDOFF-2026-10-05-122120-windows-claude-review.md แล้วตรวจ
 รับช่วง draft Windows plan และทำงานเอกสาร/reviewซ้ำที่อนุมัติไว้:
 reconcile docs/plans/2026-10-05-windows-mvp-plan.md กับ findings C1–C7
 ให้ tasks/manifest/acceptance/dispositions ตรงกับ design ที่แก้ และส่งให้
-claude-reviewer จริงผ่าน C:/Users/Kraiwin_S/bin/claude-run.py (opus/high)
+claude-reviewer จริงผ่าน %USERPROFILE%/bin/claude-run.py (opus/high)
 รวม Mac MCP-status positive-control evidence และแยก unverifiedWindowsgates
 ห้ามประกอบClaudeCLIสด/ลดmodelเงียบ/แต่งreviewแทน ใช้exit/resultจริง
 แก้findingsในscopeแผนและreviewซ้ำก่อนเสนอdispatch ไม่ถามทำต่อซ้ำทีละขั้น

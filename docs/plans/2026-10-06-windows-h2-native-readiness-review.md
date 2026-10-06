@@ -37,8 +37,8 @@ backend checksum evidence belongs to the source report, not CLI runtime proof.
 ## Model-review route
 
 Installed Git Bash explicitly runs the inspected global
-`C:/Users/Kraiwin_S/bin/codex-run.sh` task launcher with the pinned existing
-`C:/Users/Kraiwin_S/bin/codex` wrapper. CODEX_BIN selects the nominated installed
+`%USERPROFILE%/bin/codex-run.sh` task launcher with the pinned existing
+`%USERPROFILE%/bin/codex` wrapper. CODEX_BIN selects the nominated installed
 0.160.0 EXE; no candidate discovery or fallback is requested. The wrapper's
 internal version call and `codex exec` are part of the authorized MODEL REVIEW
 route, not a native H2/version/help experiment or account/quota probe.

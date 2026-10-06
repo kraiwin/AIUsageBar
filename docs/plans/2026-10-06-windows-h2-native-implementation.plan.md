@@ -121,7 +121,7 @@ Exact new forms:
 - Action: Canonical GUID N ID and64 hexadecimal hash. Derive paths from verified
   test-assembly repository layout; no arbitrary image/manifest/cwd/output path.
 - Prepare: Inspect ONLY the exact nominated installed image:
-  C:/Users/Kraiwin_S/AppData/Roaming/npm/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe.
+  %USERPROFILE%/AppData/Roaming/npm/node_modules/@openai/codex/node_modules/@openai/codex-win32-x64/vendor/x86_64-pc-windows-msvc/bin/codex.exe.
   Package0.160.0-win32-x64, image SHA256
   fdda5fa3cf3fb3d000b876720742857676293e4315e4b045fae6f8bd7e866d1d.
   Capture current fileID/size under the reviewed lease and resolve only machine
