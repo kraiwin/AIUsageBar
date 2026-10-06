@@ -5,6 +5,46 @@
 
 ## [Unreleased]
 
+- Windows live edition: Codex quota จริงผ่าน guarded app-server, Claude statusline bridge พร้อมสำรอง/คืนค่าเดิม และ tray ภาษาไทย/รีเฟรช 5 นาที
+- เพิ่ม31เคส: offline141/141, focused10+15+6, Release0warning/error, live Codex และ tray smoke exit0; Claude UI จริงยังรอ owner ตรวจ
+
+- Actual Codex CLI review ของ native H2 implementation plan ได้ fix-then-proceed (5Major/1Minor/1Info): lifecycle, cleanup/accounting และ consumer hash binding ยังต้องแก้ในแผน. เก็บ verdict/provenance/dispositions; ยังไม่แก้ source หรือรัน native.
+
+- รวมร่าง native H2 implementation plan หลังจุดพัก: callback ตรวจ guard ก่อน Create/Resume, fixture/comment/sentinel และขอบเขต metadata/cleanup; self-gate source22 hashes ผ่าน. ยังไม่เริ่ม actual CLI plan review หรือแก้ app source/รัน native.
+
+- เพิ่ม native H2 readiness source packet และ observation manifest: แยก conditional secret-route exclusions, bundled skills/reload, synthetic Git boundary และ implicit initialize account work จาก runtime coverage ที่ยังไม่ทราบ. เป็น read-only planning; ยังไม่เพิ่ม source/native route หรือรันจริง. Actual CLI delta ให้ PROCEED เฉพาะ readiness contract หลังแก้1Major/2Minor/1Info; 0findingใหม่. ครบ9loader contexts/fallback และ held-image object/launch-path binding gates; native admission ยัง STOP.
+
+- เพิ่ม H2 preparation ตามแผนที่ owner อนุมัติ: internal per-instance inventory whitelist, typed bounded validators, literal wire fixtures และ26 fake/offline cases. แก้ nullable guard และเพิ่ม test-only process teardown barrier หลังพบ scratch-sharing race; ไม่แก้ production cleanup หรือเพิ่ม native route. หลักฐาน build/focused/full อยู่ใน docs/validation/2026-10-06-windows-h2-preparation.md; native run/บัญชีจริงยังแยก approval.
+
+- เพิ่ม C1 startup/platform/distribution closure และ H2 decision packet หลังH0: conditional model-fetch/plugins/initialize gates, publicOSstore vs providersecrets, package/hash/provenance limitationsและ sourcechecksums. Native GPT reviewปรับguard/evidencecontractครบ แต่ยังไม่มี native run/source changes; รอ ownerเลือกระดับหลักฐานก่อนconcrete H2 plan
+
+- แก้ H0 privilege guard หลัง same-token differential ยืนยัน TokenElevation ต้องใช้ query capacity4บน host นี้แทน4096; other-class controlsผ่าน. Team staticreview/parser/hashก่อน corrected replayหนึ่งครั้งได้ metadata-clear/error0, system targetsabsent-by-parent. Scopeเฉพาะmetadata ไม่ใช้บัญชี/CLIจริง ไม่แก้ appsource; C1/C5/H1/H2 gatesคงเดิม
+
+- ดำเนิน H0 in-memory preflight หนึ่งครั้งตาม owner instruction: static review/parser/hash ผ่านก่อน invoke แต่ runtime หยุด inconclusive/privilege/error24 ก่อนตรวจ system config metadata. บันทึก14-field resultตามจริง ไม่รันซ้ำ ไม่เรียก CLI/บัญชีจริงหรือแก้ app source; C1/C5/H1/H2 ยัง gated
+
+- เตรียม H0 host metadata plan ตามคำสั่ง planning-only/no real accounts: ลดจาก H0/H1 harness เป็น in-memory PowerShell command ไม่มี filesystem artifact. Actual Codex CLI final180638 ให้ PROCEED for PLAN;14-field safe schema/token/known-folder/cleanup/source-hash contractsครบ. ยังรอ owner plan/dispatch ไม่ author/run คำสั่ง ไม่แก้ app source/build/probe/settings/accounts; H1/H2/C1/C5 ยัง gated
+
+- เพิ่ม C1/C5 read-only team studies และ decision proposal: pinned auth/bootstrap/network-effect map, disposableguest isolation requirements และ C5 upstreamcaller admission gap. Independent native GPT skeptic finding quotaRPCscopeแก้แล้ว ไม่มีfindingค้าง. C1/C5ยังblocked; ไม่แก้ app/harness source ไม่build/probe/install/account/settings/commit/push ไม่ถือเป็นimplementation-readyplan
+
+- ปิด Windows C6 deterministic proof: internal readonly per-instance callback ตรงก่อน ReplaceFileW และ test friend assembly; เพิ่ม4กรณี actualWin32 race/controls/security/closed-handle exact recovery pathname survival. Release0warnings/errors, focused4/4/full offline84/84ไม่มีskip และ independent native GPT review ไม่มีfindingค้าง. เป็น conflict detection+retained evidence ไม่ใช่CAS/rollback; C1/C5ยังblocked ไม่มีnative/account/settings/install/commit/push
+
+- เพิ่ม handoff Windows C6 plan-ready สำหรับ sessionใหม่: exactactualreview/proof/state/ownership/approval boundary และงานค้าง C1/C5; MEMORYชี้ latesthandoff ไม่มีsourcechange/commit/pushในคำขอhandoff
+
+- เพิ่มarchitect Windows C6-only blocker amendment และ actualCodexplanreview/dispositions ครบถึงfocusedPROCEEDforPLAN: deterministic realWin32raceผ่านinternalper-instance testseam, initialexpectedadversaryID/bytes+closedhandlepathname-survival controls. ยังไม่แก้source/รันtestsใหม่ รอownerplan/dispatch C1/C5strictgatesยังคงเดิม
+
+- เพิ่ม Windows W1 offline edition แยกใต้windows/: C#/.NET10/WinForms trayไทย/iconของเรา, strictusage/freshness/throttle/state/fakeRPC, suspendedJob/pipe transport, privatequota-onlysnapshotและinert/scratchsink. Lead Release0warnings/errors,80offline testsและnativeown-windowtray/singleinstance smokeผ่าน ไม่มีrealCLI/account/settingsinstallหรือMacsourcechanges
+- W2a experimental proofแยกจากmandatorysuite: tee34/9/43ยังunsupportedจากdescendantcleanup/EOF/startup; externaleditorracefinalinconclusive. บันทึกpinnedC1knownfolderblockerและJobcounterattemptdetectionlimitation คงnative/productionbridgegates ไม่ถือว่าWindowsliveusageพร้อม ไม่มีcommit/push/release
+
+- Reconcile Windows plan C1–C7 และ actual Claude delta review ผ่าน global opus/high สองรอบ; แก้ D1–D8/E1–E3 พร้อม verbatim evidence/dispositions. แผนพร้อมเสนอ W1/W2a dispatch ตาม conditional review และ lead self-check; เลื่อน native harness จน C1 audit ครบ, ระบุ tee EOF/exit/all-descendants cleanup และ no-EOF sink discard ชัดเจน ยังไม่มี Windows source/build/tests หรือ commit/push
+
+- เพิ่มhandoffรับช่วงWindowsdraftC1–C7และactualClaudere-reviewผ่านgloballauncherที่ติดตั้งแล้ว แยกtoolsmoke/testsออกจากWindowsruntimeproof และแก้capacityprovenanceเป็นCodexตามหลักฐานที่ผู้ใช้นำมา ยังไม่มีWindowssourceหรือreviewซ้ำสำเร็จ
+
+- เพิ่ม actual Claude Windows plan review พร้อม provenance/verbatim report/lead triage: fix-then-proceed และ 7 pending dispositions ก่อน dispatch ยังไม่เปลี่ยน source หรืออ้าง Windows runtime ผ่าน
+
+- Owner อนุมัติ Windows C#/.NET10/WinForms/native Windows11 x64/trayไทย และ W1–W2 offline/isolated; บันทึก scope ใน decisions/spec/plan รอ dispatch gate ก่อนสร้าง source ยังไม่มี Windows build/tests
+
+- ตรวจสภาพ PC/native CLI/WSL และเพิ่มแผน Windows system-tray MVP เสนอ C#/.NET10/WinForms/native Windowsก่อน แยก windows/ คง Mac sourceเดิม; stack/contextและimplementationยังรอ owner อนุมัติ ไม่มีWindows build/testหรือaccount/bridge integrationในรอบวางแผน
+
 - เพิ่ม handoff Windows สำหรับเริ่มบน PC ใน repoเดิม แยก windows/ พร้อมรายการตรวจ native/WSL และแผนก่อนimplementation; ยังไม่รองรับ Windows ในแอปปัจจุบัน
 
 - แก้ restore retry หลัง interruption: เก็บ checkpoint ส่วนตัวก่อน cleanup ลบ metadata ท้ายสุด ตรวจ settings/backup digest และ ownership ของไฟล์ที่เหลือ

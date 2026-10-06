@@ -239,3 +239,113 @@ AIUsageBar/
 - ทิศทางคือ Windows edition ใน repo เดิม แยก windows/ โดยคง Mac source/Xcode layout ไว้ เริ่มตรวจ native Windows/WSL และเขียนแผนบน PC ก่อนimplementation
 - Windows stack/minimum OS/CLI context/installer/signing/dependenciesยังไม่สรุป; Swift/Apple baselineยังใช้กับMac ไม่อนุมานว่าใช้กับWindowsได้ตรง ๆ
 - ส่งต่อ docs-only ไม่ bump0.1.0/build6 ไม่สร้างtag/binary/GitHub Release หรือแก้Mac app/bridgeที่ใช้งานจริง [skip ci]เป็นconventionไม่รับรองทุกworkflowหยุด
+
+## 23. ข้อเสนอ Windows MVP จาก PC (2026-10-05) — ยังรอ owner เลือก
+
+- ผู้ใช้สั่งอ่าน MEMORY/handoff ล่าสุด ตรวจ native CLI/WSL และเขียนแผนเสนอ stack/ขอบเขตก่อน implement; รอบนี้เป็นงานเอกสาร ไม่ใช่คำสั่งลงมือ source
+- พบ Windows 11 x64, .NET SDK10.0.401/Desktop runtime10.0.12, native Codex0.160.0 และ Claude2.1.289; WSLมีเพียง docker-desktop ดู [environment evidence](validation/2026-10-05-windows-environment.md)
+- **เสนอ** C#/.NET10 + WinForms NotifyIcon, icon/tooltip/menuภาษาไทย, native Windowsก่อน (Codex quota + Claude latest snapshotผ่าน Git Bashที่ยืนยัน); เลื่อนWSL/PowerShell statusline/Windows10/ARM64/installer/autostart/signing/binary release
+- Sourceใหม่แยก windows/ คงMac source/tests/Config/Xcodeไว้เหมือนเดิม ไม่สร้างshared compiled core ไม่เพิ่มthird-party NuGetในข้อเสนอแรก
+- [Windows MVP plan](plans/2026-10-05-windows-mvp-plan.md) ระบุ process/job cleanup, native guards, encoding/ACL/atomic replacement, shell/preview/restore และtest gates; version/helpไม่ใช่compatibility/account proof ต้องตรวจisolated probesก่อนreal quota/settings
+- Stack/support contextและimplementationยังไม่อนุมัติ ไม่มีWindows build/testหรือbridge installในรอบวางแผนนี้
+- Native Codex CLI review พบ5blockers/2suggestions แก้แผนและบันทึกdispositionครบ; delta re-reviewให้ proceed for PLAN ไม่มีmajor/minorใหม่ แต่launcher/guards/filesystemยังต้องพิสูจน์จริง ไม่ใช่ผลWindows testผ่าน แนะนำเริ่มอนุมัติเฉพาะW1–W2offline/isolatedก่อน
+
+## 24. Owner อนุมัติ Windows W1–W2 (2026-10-05)
+
+- ผู้ใช้ตอบ “go” ต่อสรุปรับช่วงและข้อเสนอเริ่ม W1–W2 จึงอนุมัติ C#/.NET10/WinForms, native Windows11 x64, tray icon/tooltip/menuภาษาไทย แยก source ใต้ windows/ คง Mac source/Xcode เดิม
+- อนุมัติ offline tray/core/tests และ isolated native compatibility/process/shell/filesystem probes ตามแผนที่ผ่าน review แล้ว ไม่มี third-party NuGet ในขอบเขตนี้
+- W3 real account quota และ W4 live bridge/user settings writes ยังไม่อยู่ใน scope; ไม่รวม autostart/release/commit/push
+- plan-gate ข้ออนุมัติแผนผ่านแล้ว; เสนอทีม backend-dev/worker/qa-engineer และรอ owner ยืนยัน dispatch gate ที่สองก่อน source implementation
+
+## 25. Owner อนุมัติ dispatch Windows W1/W2a (2026-10-05)
+
+- ผู้ใช้ตอบ “go” ต่อข้อเสนอทีม backend-dev(core/process/inert sink), worker(tray/build/icon), qa-engineer(tests/synthetic experiments) จึงผ่าน dispatch gate ที่สอง
+- ลงมือเฉพาะ W1/W2a offline/fake/synthetic ตาม corrected plan/conditional Claude review และ lead self-check; native W2b harness ทั้งการเขียนและรันรอ C1 audit ครบก่อน
+- ไม่มีการอนุมัติ real Codex/Claude invocation, account quota, compatibility import, production bridge/settings/install, autostart, release, commit หรือ push ใน dispatch นี้
+
+## 26. Owner อนุมัติ C6 plan และ continuous team dispatch (2026-10-05)
+
+- ผู้ใช้ตอบ `go` หลังรับช่วง C6 plan-ready จึงอนุมัติแผน C6 ที่ผ่าน actual Codex CLI review แล้ว และข้อความถัดมาขอไปต่อรวดเดียวพร้อมแตก sub-agents จึงยืนยัน dispatch gate ที่สองสำหรับ C6
+- backend-dev รับผิดชอบ PrivateFiles.cs/Core.csproj; qa-engineer รับผิดชอบ ClaudeTests.cs; lead รับผิดชอบ integration, independent review และเอกสาร ทำ implementation/tests/review/docs ต่อเนื่องในขอบเขตสาม source files ตามแผน
+- C1/C5 ยังคง blocked และ strict เดิม ไม่มี native/account/settings/install/dependency/commit/push/release permission เพิ่ม
+
+## 27. Owner อนุมัติ C1/C5 read-only team study (2026-10-05)
+
+- ผู้ใช้ตอบ `go` ต่อข้อเสนอให้ทีมศึกษา C1 isolation และ C5 bridge แบบ read-only แล้วเสนอแผนพร้อมข้อแนะนำก่อนลงมือ
+- แยกทีม C1 pinned-source/isolation, C5 architecture และ independent skeptic; เขียนผลศึกษา/decision plan ได้ แต่ไม่แก้ app/harness source ไม่รัน real CLI/account/context probe ไม่ติดตั้ง/enable OS/toolchain หรือเขียน settings
+- เกณฑ์ C5 ทุก descendant <=2s และ caller exit/stdout/stderr EOF overhead <=500ms คงเดิม; C1/C5 ยัง blocked จนมีหลักฐานและการอนุมัติขั้นถัดไป ไม่ถือการศึกษาเป็น implementation/dispatch/installation permission
+
+## 28. Owner เลือก host-test planning only, ไม่มี VM (2026-10-05)
+
+- ผู้ใช้แจ้งว่าไม่มี VM และสั่ง “go เตรียมแผนทดสอบบนเครื่องนี้แบบจำกัดก่อน ยังไม่รันทดลองหรือใช้บัญชีจริง” จึงเลือกเตรียมแผนบน Windows host นี้แทน guest branch
+- อนุมัติ architect/skeptic read-only planning และ actual Codex CLI model-review workflow ตาม plan-gate; ไม่ใช่ native app-server/Claude compatibility invocation หรือการใช้บัญชีจริงของแอปทดลอง
+- ยังไม่อนุมัติแผนฉบับใหม่/source dispatch/build/test/probe/install/settings/account/quota. แผนต้องระบุ preflight, effects, exact scope, recovery limitations และ stop gates โดยไม่อ้าง scratch/job เป็น isolation หรือรับรอง rollback ของ network/auth effects
+- C1/C5 blockers และ strict2s/500ms คงเดิม จนมีหลักฐานหรือ owner เปลี่ยนขอบเขตอย่างชัดเจน
+
+## 29. Owner สั่งดำเนิน H0 ตามแผน reviewed (2026-10-06)
+
+- ผู้ใช้สั่ง “ลุย h0” หลังส่งมอบแผน H0 in-memory ที่ actual Codex CLI ให้ PROCEED จึงอนุมัติการเตรียมคำสั่ง ตรวจ source/parser/hash และรัน H0 หนึ่งครั้งในขอบเขตนั้น
+- main/QA เตรียมคำสั่งในหน่วยความจำและตรวจรับก่อน execution; เป็น tooling ไม่มี app source หรือ filesystem implementation artifact และไม่ขอ dispatch ซ้ำสำหรับคำสั่ง H0 ที่สั่งให้ดำเนินแล้ว
+- อนุญาตเฉพาะ OS privilege/known-folder/target metadata และ fixed14-field result. ไม่อ่านเนื้อหา config/auth ไม่เรียก provider CLI/บัญชี/quota ไม่ SDK/build/install/settings/commit/push. H1/H2 และ C1/C5 ยัง gated; ผล metadata ไม่ใช่ native integration ผ่าน
+
+## 30. Owner อนุมัติแก้ guard และ H0 replay หนึ่งครั้ง (2026-10-06)
+
+- ผู้ใช้สั่งตรวจ root cause/แก้ guard/ให้ทีม review/รัน H0 ใหม่หนึ่งครั้งในขอบเขตเดิม จึงอนุมัติ bounded guard-only token diagnostic และ corrected metadata replay หลัง self-gate
+- รัน diagnostic เปรียบเทียบ capacity บน token handle เดียว ไม่อ่านค่าจาก bufferหรือ config; พบ TokenElevation4096 fail24/4ผ่าน จึงแก้เฉพาะcapacityชนิดนั้น. Native GPT author/reviewer ตรวจdeltaก่อน parser/hashและ corrected H0หนึ่งครั้ง
+- H0 replay ได้ metadata-clear แต่ nativeAuthorized=false/C1C5blocked; ไม่มีการอนุมัติ H1/H2/provider/account/quota/setup/source publication เพิ่ม
+
+## 31. Read-only C1 continuation หลัง H0 (2026-10-06)
+
+- ผู้ใช้ตอบ go หลัง H0 replay metadata-clear; เดินงานถัดไปตาม STATUS โดยปิด source paths/binary distribution metadata และเตรียม native-contract decision เท่านั้น ไม่อนุมานว่าอนุมัติ H2 หรือบัญชีจริง
+- Source/distribution readers และ native GPT skeptic ตรวจ startup/plugin/model/initialize/registry/platform/transitive paths; เขียนรายงานที่แยก conditional source evidence จาก runtime และตรวจ hash ของ source dependencies ที่ใช้
+- ส่งคำถาม optional เลือก strict isolation หรือ bounded inventory evidence; ยังไม่มี owner choice/approval ในรอบนี้ การเตรียมแผนไม่ใช่ native/source dispatch/account/network-effect permission
+
+## 32. Owner เลือก bounded H2 inventory planning (2026-10-06)
+
+- ผู้ใช้เลือก “H2 แบบจำกัด เตรียมแผนต่อ” จึงเลือกขอบเขตหลักฐาน bounded inventory สำหรับแผนขั้นถัดไป ไม่คงข้ออ้าง strict isolation/zero effects ที่ยังพิสูจน์ไม่ได้บน host
+- แผนต้องเปิดเผย shared Windows token, ordinary OS known-folder/proxy/public-root reads, approved scratch state และ possible unauthenticated early network attempts; ส่วนที่ไม่มี observation คง inconclusive. Provider secrets/account/auth/quota/turn/tool/MCP/statusline/settings mutation ยังห้าม
+- อนุมัติเฉพาะ delegated architectural design/source reads/actual Codex CLI plan review และเอกสาร. ยังไม่ source implementation/build/test/native execution/account/install/network-policy/commit/push. Preparation และ native run ต้องแยก approval; การเลือก contract ไม่ใช่ C1/C5 ผ่าน
+- ใช้ research-agent thread เดิมทำ architectural design และ CLI-review routing เพราะ thread limit; ไม่อ้างว่า spawn architect/codex-reviewer role ใหม่สำเร็จ หรือ native GPT เป็น actual CLI review
+
+## 33. Owner อนุมัติ H2 preparation plan และ dispatch (2026-10-06)
+
+- ผู้ใช้ระบุ “อนุมัติแผนและ dispatch H2 preparation” จึงผ่านทั้งสอง gates สำหรับแผนที่ actual Codex CLI ให้ PROCEED แล้ว
+- ลงมือเฉพาะ3sourcefiles: CodexProvider.cs internal H2method mode; H2InventoryTests.cs policy/parser/coordinator/fake fixtures/tests; Program.cs offline/fake-H2 routing. รวม self-gate/build/focused/full offline/review/docs โดย existing stack ไม่มีdependency/restore/installเพิ่ม
+- Reuseทีมเดิม: c1_host_contractรับCore delta, c1_studyรับnewtests+runner, host_plan_safetyรับread-onlyreview, lead integration/run/docs. ไม่ใช่roleagentใหม่ ทุกคนรักษางานคนอื่น
+- NativeH2/provider/บัญชี/quota/CLIcompatibility/H1/bridge/settings/autostart/commit/push/release ยังไม่อนุมัติ ไม่เพิ่มnative routeแฝงจากpreparation
+
+- Execution evidence for decision33: preparation completed in the approved three-file scope. Release build0warnings/errors, focusedH2 26/26, full offline110/110 (0failed/0skipped); independent native GPT review accepted. Initial failures and corrections are retained in [H2 validation](validation/2026-10-06-windows-h2-preparation.md). Native approval boundary is unchanged.
+
+## 34. Read-only native H2 readiness planning after preparation (2026-10-06)
+
+- Owner replied `go` after preparation completion and the proposed next step: provider-secret-path closure and observation planning. Continue delegated source research, exact evidence manifests, skeptical review and actual Codex CLI plan-review workflow.
+- This authorization does not launch native H2 or read real provider account/config/auth contents. No source implementation, SDK/build/test, installation, OS/network policy, settings, commit/push/release in this round.
+- A concrete later amendment must retain separate source/dispatch/run gates, unknown-path stops and calibrated inventory-versus-access coverage. Existing research threads are reused; no new role agent is asserted.
+
+- Execution checkpoint for decision34: selected source investigation/observation/readiness contract complete.14 source hashes verified; actualCLI first1Major/2Minor/1Info -> deltaPROCEED for READINESS CONTRACT,0newfindings/exit0. Nine loader contexts/fallback, image-object/launch-path binding and review scope are explicit. No native/source approval follows; next concrete native fixture/identity/context/validator implementation plan and owner gates remain separate. [Readiness review](plans/2026-10-06-windows-h2-native-readiness-review.md) records provenance and source/runtime limits.
+
+## 35. Concrete native H2 implementation planning (2026-10-06)
+
+- Owner replied `go` after the reviewed readiness contract and proposed next step: native fixture/guard/identity implementation PLAN. Authorize delegated architectural design, bounded pinned-source contracts, saved implementation plan and actual Codex CLI plan review.
+- No app source, SDK/build/tests, fresh real H0 or native invocation is authorized in this planning round. No real provider account/config/auth contents, installation, OS/network policy, settings, commit/push/release.
+- An actual architect agent now designs the plan; existing source/identity readers supply contracts, lead alone writes the saved plan. Reviewer routing may reuse an existing contributor thread if the old reviewer is unavailable; actual CLI review is separately recorded and never replaced by contributor comments.
+- The concrete source amendment may propose an explicit test-runner native entry, immutable reviewed manifest and single-attempt discipline only after owner plan AND dispatch approval. Build/fake tests do not authorize invoking it. Owner run approval remains separate and must include fresh metadata guard plus ONE nominated native child; this avoids another unspecified code-plan phase without silently enabling runtime effects.
+
+## 36. Short resume after planning break (2026-10-06)
+
+- Owner said “ไป” after the pause and proposed short next segment. Resume final draft corrections and self-gate, then report before a long review segment. No new source/build/H0/native permission follows.
+- Required launch checkpoint callback merged;22 source hashes/local links/unchanged26 app baseline checked. Actual CLI implementation-plan review not started; next segment is that review, not source implementation. Pause handoff remains historical.
+
+## 37. Actual implementation-plan review segment (2026-10-06)
+
+- Owner said “ไป” after the short draft/self-gate result and proposed Codex CLI review. Run one actual model-review invocation on a frozen five-label packet, then report findings before opening another long study/fix segment.
+- Existing contributor thread routes the installed CLI; its comments are not independent code review. Actual external CLI verdict is separate. No source/build/H0/native/account-contents/settings/install/push permission.
+- Input C:/tmp/aiusagebar-h2-native-implementation-input.md SHAa935095d6dfa8beab564219e5992781098b74a0f0f6098baa8a8b5e1f45b22c3,136744bytes/2167lines. Invocation20261006-134939-h2-native-implementation-13644 is MODEL REVIEW only; wrapper version metadata and exec are not H2 experiments.
+
+- Decision37 execution: one actualCLI review completed fix-then-proceed5Major/1Minor/1Info; no followup study/fix/delta or source/native. All findings accepted but open. Next bounded contract-correction segment must precede actual delta and owner source/dispatch approval.
+
+## 38. Windows live edition — owner อนุมัติ implementation (2026-10-06)
+
+- อนุญาต Codex CLI จริงกับบัญชี owner เพื่อ account/rateLimits/read ผ่าน CodexPolicy ปิด MCP/hooks/plugins/analytics และ job ฆ่า process ลูก ระดับความระวังเท่า Mac; ยกเลิกข้อห้าม native เดิมสำหรับงานนี้
+- ต่อ Claude ผ่านเมนูแอป แก้เฉพาะ statusLine สำรองค่าเดิมและมี Restore; เทสอัตโนมัติใช้ temp settings ห้ามแตะ settings จริง
+- ใช้ [แผน frozen](plans/2026-10-06-windows-live.codex-plan.md) และกติกาสำหรับ Codex แทน process วางแผน/รีวิว; ไม่มี installer/autostart/NuGet ภายนอก/แตะ Mac/commit/push และห้าม log secret/raw payload

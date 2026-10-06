@@ -1,6 +1,9 @@
 # Reference source (read-only, not ours)
 reference/
 
+# Local planning specifications
+docs/specs/
+
 # Xcode / Swift build output
 build/
 .build/

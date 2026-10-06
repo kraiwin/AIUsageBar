@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>Assets/AIUsageBar.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../AIUsageBar.Core/AIUsageBar.Core.csproj" />
+    <ProjectReference Include="../AIUsageBar.Bridge/AIUsageBar.Bridge.csproj" />
+    <EmbeddedResource Include="Assets/AIUsageBar.ico" />
+  </ItemGroup>
+</Project>

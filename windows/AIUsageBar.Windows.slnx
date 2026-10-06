@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="src/AIUsageBar.Core/AIUsageBar.Core.csproj" />
+  <Project Path="src/AIUsageBar.Bridge/AIUsageBar.Bridge.csproj" />
+  <Project Path="src/AIUsageBar.Tray/AIUsageBar.Tray.csproj" />
+  <Project Path="tests/AIUsageBar.Tests/AIUsageBar.Tests.csproj" />
+</Solution>

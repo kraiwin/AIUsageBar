@@ -6,7 +6,17 @@ Development `0.1.0` (build 6) เชื่อม Codex และ Claude snapshot
 
 Public source สำหรับ build เอง: [kraiwin/AIUsageBar](https://github.com/kraiwin/AIUsageBar) เวอร์ชัน source `0.1.0` ไม่มี binary release/tag; การตรวจจริงและข้อจำกัดล่าสุดอยู่ใน [STATUS](docs/STATUS.md)
 
-## Build และเปิดแอป
+## Windows edition — ทดลองออฟไลน์
+
+มี Windows11 x64 / C# / .NET10 / WinForms edition แยกใต้ `windows/`:
+Release build และ80offline tests ผ่านบน PC นี้ พร้อม tray/menuไทยที่ยังแสดง
+ข้อมูล unavailable. ยังไม่เชื่อม usage บัญชีจริง; native isolation และ production
+Claude bridge ยังติด gate จากผลทดลอง ไม่ถือว่ารองรับ live usage บน Windows.
+ดู [Windows build/run](windows/README.md) และ
+[ผลตรวจ/ข้อจำกัด](docs/validation/windows-mvp-validation.md). Mac edition ด้านล่าง
+ใช้ workflow เดิม Windows binary/tag/release ยังไม่เผยแพร่.
+
+## Build และเปิดแอปบน macOS
 
 ต้องมี Xcode พร้อม macOS SDK; deployment target macOS 14 ใช้ Swift และ Apple frameworks เท่านั้น ไม่มี library dependencies ภายนอก ไม่มี shell build phase
 
